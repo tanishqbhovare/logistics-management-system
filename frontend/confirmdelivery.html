@@ -64,9 +64,11 @@
     </div>
 
     <script>
+        const API_BASE_URL = "https://logistics-management-system-dk0t.onrender.com";
+
         async function loadDeliveries() {
             try {
-                const response = await fetch('http://127.0.0.1:5000/all_deliveries');
+                const response = await fetch(`${API_BASE_URL}/all_deliveries`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch deliveries');
                 }
@@ -186,7 +188,7 @@
                 hideConfirmModal();
                 
                 try {
-                    const response = await fetch('http://127.0.0.1:5000/confirm_delivery', {
+                    const response = await fetch(`${API_BASE_URL}/confirm_delivery`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'

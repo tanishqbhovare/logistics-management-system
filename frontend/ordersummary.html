@@ -324,12 +324,13 @@
   </div>
 
   <script>
+    const API_BASE_URL = "https://logistics-management-system-dk0t.onrender.com";
     const deliveryId = localStorage.getItem("delivery_id");
     const clientInfo = JSON.parse(localStorage.getItem("clientInfo"));
 
     if (deliveryId) {
       document.getElementById('delivery-id-badge').textContent = `Order #${deliveryId}`;
-      fetch(`http://127.0.0.1:5000/order_summary/${deliveryId}`)
+      fetch(`${API_BASE_URL}/order_summary/${deliveryId}`)
         .then(res => res.json())
         .then(summary => {
           document.getElementById('loading-section').style.display = 'none';

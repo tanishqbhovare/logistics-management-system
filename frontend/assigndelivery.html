@@ -46,6 +46,7 @@
   </div>
 
   <script>
+    const API_BASE_URL = "https://logistics-management-system-dk0t.onrender.com";
     const routeDetails = JSON.parse(localStorage.getItem("routeDetails"));
     const driverSelect = document.getElementById("driver");
     const truckSelect = document.getElementById("truck");
@@ -54,7 +55,7 @@
     // Populate drivers and trucks
     async function loadResources() {
       try {
-        const res = await fetch('http://127.0.0.1:5000/get_available_resources');
+        const res = await fetch(`${API_BASE_URL}/get_available_resources`);
         const data = await res.json();
 
         data.drivers.forEach(driver => {
@@ -100,7 +101,7 @@
       };
 
       try {
-        const res = await fetch('http://127.0.0.1:5000/assign_delivery', {
+        const res = await fetch(`${API_BASE_URL}/assign_delivery`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"

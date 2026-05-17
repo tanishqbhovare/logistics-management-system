@@ -85,6 +85,7 @@
    </div>
   </div>
   <script>
+   const API_BASE_URL = "https://logistics-management-system-dk0t.onrender.com";
    const form = document.getElementById('routeForm');
    const placeholderContent = document.getElementById('placeholderContent');
    const detailsContent = document.getElementById('detailsContent');
@@ -103,7 +104,7 @@
 
      if(origin && destination) {
        try {
-         const response = await fetch('http://127.0.0.1:5000/get_routes', {
+         const response = await fetch(`${API_BASE_URL}/get_routes`, {
            method: 'POST',
            headers: {
              'Content-Type': 'application/json'
