@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DeliverEase</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Plus+Jakarta+Sans:wght@400;700&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    h1, p, nav ul li a {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .logo-text {
+      font-family: 'Poppins', sans-serif;
+    }
+    #getStartedBtn {
+      background-color: #3a86ff;
+      color: white;
+      font-weight: 600;
+      padding: 0.75rem 2rem;
+      border-radius: 0.5rem;
+      margin-top: 2rem;
+      transition: all 0.2s ease;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      box-shadow: 0 4px 6px rgba(58, 134, 255, 0.25);
+    }
+    #getStartedBtn:hover {
+      background-color: #2667ff;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 8px rgba(58, 134, 255, 0.3);
+    }
+    #confirmDeliveriesBtn {
+      background-color: #10b981;
+      color: white;
+      font-weight: 600;
+      padding: 0.75rem 2rem;
+      border-radius: 0.5rem;
+      margin-top: 2rem;
+      margin-left: 1rem;
+      transition: all 0.2s ease;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      box-shadow: 0 4px 6px rgba(16, 185, 129, 0.25);
+    }
+    #confirmDeliveriesBtn:hover {
+      background-color: #059669;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 8px rgba(16, 185, 129, 0.3);
+    }
+    .button-group {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-[#d9e7f9] via-[#f0f0f9] to-[#e9e4f7] min-h-screen">
+  <header class="bg-white">
+    <nav class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 flex items-center justify-between h-16">
+      <div class="text-black font-extrabold text-lg select-none logo-text">DeliverEase</div>
+      <ul class="hidden md:flex space-x-8 text-gray-900 text-sm font-normal mx-auto">
+        <li><a href="#" class="hover:underline">Vision</a></li>
+        <li><a href="#" class="hover:underline">About Us</a></li>
+      </ul>
+      <div class="hidden md:flex items-center space-x-4 text-gray-700 text-sm">
+        <div class="flex items-center space-x-1">
+          <i class="fas fa-envelope"></i>
+          <span>support@deliverease.com</span>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-6 sm:px-8 lg:px-12 py-20 text-center relative overflow-hidden rounded-b-lg flex flex-col items-center" style="background-image: linear-gradient(135deg, rgb(217, 231, 249) 0%, rgb(240, 240, 249) 50%, rgb(233, 228, 247) 100%); box-shadow: rgba(0, 0, 0, 0.05) 0px 10px 30px;">
+    <h1 class="text-[#0a142f] font-extrabold text-3xl sm:text-4xl leading-snug max-w-full">
+      Streamline your Deliveries with DeliverEase
+    </h1>
+    <p class="mt-4 text-[#4b5563] text-base sm:text-lg max-w-3xl mx-auto">
+      Optimize routes and enhance delivery efficiency with our intelligent logistics management platform.
+    </p>
+    <div class="button-group">
+      <button id="getStartedBtn" onclick="window.location.href='routes.html'">
+        Get Started
+      </button>
+      <button id="confirmDeliveriesBtn" onclick="window.location.href='confirmdelivery.html'">
+        <i class="fas fa-check-circle mr-2"></i>Deliveries
+      </button>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delivery Order Summary</title>
+  <!-- Your existing styles stay the same -->
+  <style>
+    :root {
+        --primary: #3a86ff;
+        --success: #2ecc71;
+        --text: #333;
+        --light-bg: #f8f9fa;
+        --border: #e0e0e0;
+    }
+    
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    
+    body {
+        background-color: var(--light-bg);
+        color: var(--text);
+        line-height: 1.6;
+        padding: 20px;
+    }
+    
+    .container {
+        max-width: 800px;
+        margin: 40px auto;
+    }
+    
+    .card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+    }
+    
+    .card-header {
+        padding: 25px 30px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .card-header h1 {
+        font-size: 22px;
+        font-weight: 600;
+    }
+    
+    .delivery-id {
+        font-size: 14px;
+        background-color: var(--light-bg);
+        padding: 6px 12px;
+        border-radius: 20px;
+        color: var(--primary);
+        font-weight: 500;
+    }
+    
+    .loading {
+        padding: 40px 0;
+        text-align: center;
+    }
+    
+    .loading .spinner {
+        width: 50px;
+        height: 50px;
+        border: 3px solid rgba(58, 134, 255, 0.2);
+        border-radius: 50%;
+        border-top-color: var(--primary);
+        animation: spin 1s ease-in-out infinite;
+        margin: 0 auto 20px;
+    }
+    
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    
+    .loading p {
+        color: #666;
+        font-size: 16px;
+    }
+    
+    .card-body {
+        padding: 30px;
+    }
+    
+    .success-icon {
+        width: 60px;
+        height: 60px;
+        background: var(--success);
+        border-radius: 50%;
+        margin: 0 auto 25px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .success-icon svg {
+        width: 30px;
+        height: 30px;
+        fill: white;
+    }
+    
+    .confirmation {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    .confirmation h2 {
+        color: var(--success);
+        margin-bottom: 10px;
+        font-size: 24px;
+    }
+    
+    .confirmation p {
+        color: #666;
+        font-size: 16px;
+    }
+    
+    .summary-section {
+        margin: 40px 0 20px;
+    }
+    
+    .summary-section h3 {
+        font-size: 18px;
+        margin-bottom: 15px;
+        color: var(--text);
+        font-weight: 600;
+    }
+    
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 15px 0;
+        border-bottom: 1px solid var(--border);
+    }
+    
+    .summary-row:last-child {
+        border-bottom: none;
+    }
+    
+    .summary-label {
+        color: #666;
+        font-size: 15px;
+    }
+    
+    .summary-value {
+        font-weight: 500;
+        font-size: 15px;
+    }
+    
+    .driver-truck-info {
+        display: flex;
+        gap: 30px;
+        margin-top: 30px;
+    }
+    
+    .info-card {
+        flex: 1;
+        background: var(--light-bg);
+        border-radius: 8px;
+        padding: 20px;
+    }
+    
+    .info-card h4 {
+        font-size: 16px;
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+    
+    .info-item {
+        display: flex;
+        margin-bottom: 10px;
+    }
+    
+    .info-item .icon {
+        width: 20px;
+        margin-right: 10px;
+        opacity: 0.7;
+    }
+    
+    .info-item p {
+        font-size: 14px;
+    }
+    
+    .map-view {
+        margin-top: 40px;
+        height: 200px;
+        border-radius: 8px;
+        overflow: hidden;
+        background: #e9ecef;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #666;
+    }
+    
+    .btn {
+        display: inline-block;
+        background: var(--primary);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 500;
+        margin-top: 30px;
+        text-align: center;
+        transition: all 0.2s;
+    }
+    
+    .btn:hover {
+        background: #2667ff;
+        transform: translateY(-2px);
+    }
+    
+    .card-footer {
+        padding: 20px 30px;
+        background: var(--light-bg);
+        display: flex;
+        justify-content: center;
+    }
+    
+    #order-summary-section {
+        display: none;
+    }
+    
+    #assign-error {
+        color: #e74c3c;
+        text-align: center;
+        padding: 20px;
+        display: none;
+    }
+    
+    @media (max-width: 768px) {
+        .container {
+            margin: 20px auto;
+        }
+        
+        .card-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .delivery-id {
+            margin-top: 10px;
+        }
+        
+        .driver-truck-info {
+            flex-direction: column;
+            gap: 15px;
+        }
+    }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="card-header">
+        <h1>Delivery Order Summary</h1>
+        <span class="delivery-id" id="delivery-id-badge">Processing...</span>
+      </div>
+
+      <div id="loading-section" class="loading">
+        <div class="spinner"></div>
+        <p>Processing your delivery request...</p>
+      </div>
+
+      <div id="assign-error"></div>
+
+      <div id="order-summary-section">
+        <div class="card-body">
+          <div class="confirmation">
+            <div class="success-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"></path>
+              </svg>
+            </div>
+            <h2>Delivery Confirmed!</h2>
+            <p id="confirmation-message"></p>
+          </div>
+
+          <div class="summary-section">
+            <h3>Delivery Details</h3>
+            <div class="summary-row"><span class="summary-label">Origin</span><span class="summary-value" id="origin">-</span></div>
+            <div class="summary-row"><span class="summary-label">Destination</span><span class="summary-value" id="destination">-</span></div>
+            <div class="summary-row"><span class="summary-label">Distance</span><span class="summary-value" id="distance">-</span></div>
+            <div class="summary-row"><span class="summary-label">Estimated Time</span><span class="summary-value" id="estimated-time">-</span></div>
+            <div class="summary-row"><span class="summary-label">Status</span><span class="summary-value" id="status">-</span></div>
+          </div>
+
+          <div class="driver-truck-info">
+            <div class="info-card">
+              <h4>Driver Information</h4>
+              <div class="info-item"><div class="icon">👤</div><p id="driver-name">-</p></div>
+              <div class="info-item"><div class="icon">📞</div><p id="driver-phone">-</p></div>
+            </div>
+            <div class="info-card">
+              <h4>Vehicle Information</h4>
+              <div class="info-item"><div class="icon">🚚</div><p id="truck-number">-</p></div>
+            </div>
+          </div>
+
+          <div class="summary-section">
+            <h3>Client Information</h3>
+            <div class="summary-row"><span class="summary-label">Name</span><span class="summary-value" id="client-name">-</span></div>
+            <div class="summary-row"><span class="summary-label">Phone</span><span class="summary-value" id="client-phone">-</span></div>
+            <div class="summary-row"><span class="summary-label">Email</span><span class="summary-value" id="client-email">-</span></div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <a href="index.html" class="btn">Back to Dashboard</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const deliveryId = localStorage.getItem("delivery_id");
+    const clientInfo = JSON.parse(localStorage.getItem("clientInfo"));
+
+    if (deliveryId) {
+      document.getElementById('delivery-id-badge').textContent = `Order #${deliveryId}`;
+      fetch(`http://127.0.0.1:5000/order_summary/${deliveryId}`)
+        .then(res => res.json())
+        .then(summary => {
+          document.getElementById('loading-section').style.display = 'none';
+          document.getElementById('order-summary-section').style.display = 'block';
+          document.getElementById('confirmation-message').textContent = summary.message;
+          document.getElementById('origin').textContent = summary.origin;
+          document.getElementById('destination').textContent = summary.destination;
+          document.getElementById('distance').textContent = `${summary.distance_km} km`;
+          document.getElementById('estimated-time').textContent = `${summary.estimated_time_min} minutes`;
+          document.getElementById('status').textContent = summary.status;
+          document.getElementById('driver-name').textContent = summary.driver.name;
+          document.getElementById('driver-phone').textContent = summary.driver.phone;
+          document.getElementById('truck-number').textContent = summary.truck.truck_number;
+        })
+        .catch(err => {
+          document.getElementById('loading-section').style.display = 'none';
+          document.getElementById('assign-error').style.display = 'block';
+          document.getElementById('assign-error').textContent = 'Failed to load delivery summary.';
+          console.error(err);
+        });
+    } else {
+      document.getElementById('assign-error').style.display = 'block';
+      document.getElementById('assign-error').textContent = 'Delivery ID missing from local storage.';
+    }
+
+    if (clientInfo) {
+      document.getElementById('client-name').textContent = clientInfo.name;
+      document.getElementById('client-phone').textContent = clientInfo.phone;
+      document.getElementById('client-email').textContent = clientInfo.email;
+    }
+  </script>
+</body>
+</html>

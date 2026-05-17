@@ -1,0 +1,152 @@
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>
+   Login - DeliverEase
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&amp;family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet"/>
+  <style>
+   body {
+      font-family: 'Roboto', sans-serif;
+    }
+   h1, label, button, span {
+      font-family: 'Montserrat', sans-serif;
+    }
+   #detailsSection {
+     position: relative;
+     background-color: #f9fafb; /* lighter, minimalistic background */
+     overflow: hidden;
+   }
+   #detailsSection::before {
+     content: "";
+     position: absolute;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 100%;
+     background: radial-gradient(circle at center, rgba(156, 163, 175, 0.1) 0%, transparent 70%);
+     pointer-events: none;
+     z-index: 0;
+   }
+   #detailsSection > * {
+     position: relative;
+     z-index: 1;
+   }
+  </style>
+ </head>
+ <body class="min-h-screen flex">
+  <div class="w-1/2 min-h-screen bg-white flex flex-col px-10 py-12">
+   <div class="flex items-center space-x-2 mb-10">
+    <div class="bg-black rounded-md p-1.5">
+     <i class="fas fa-archive text-white text-base">
+     </i>
+    </div>
+    <span class="font-semibold text-base text-black">
+     DeliverEase
+    </span>
+   </div>
+   <form class="max-w-md w-full" id="routeForm">
+    <h1 class="text-xl font-extrabold text-black mb-1.5">
+     Plan your Route
+    </h1>
+    <label class="block font-semibold text-black mb-1" for="origin">
+     Origin
+    </label>
+    <input class="w-full border border-gray-300 rounded-md px-3 py-2 mb-4 text-gray-600 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black" id="origin" placeholder="Ex: Hyderabad" type="text" required/>
+    <label class="block font-semibold text-black mb-4" for="destination">
+     Destination
+    </label>
+    <input class="w-full border border-gray-300 rounded-md px-3 py-2 mb-6 text-gray-600 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black" id="destination" placeholder="Ex: Bangalore" type="text" required/>
+    <button class="w-full bg-black text-white font-semibold rounded-md py-2.5 mb-6 hover:bg-gray-900 transition" type="submit">
+     Submit
+    </button>
+   </form>
+  </div>
+  <div class="w-1/2 min-h-screen flex flex-col justify-between px-10 py-12" id="detailsSection">
+   <div class="flex-grow flex items-center justify-center" id="placeholderContent">
+   </div>
+   <div class="hidden" id="detailsContent">
+    <div class="bg-white rounded-md p-6 shadow-md max-w-lg mx-auto">
+     <h2 class="text-lg font-bold mb-4 text-black">Route Details</h2>
+     <p class="mb-2 text-gray-700"><span class="font-semibold">Origin:</span> <span id="displayOrigin"></span></p>
+     <p class="mb-2 text-gray-700"><span class="font-semibold">Destination:</span> <span id="displayDestination"></span></p>
+     <p class="mb-2 text-gray-700"><span class="font-semibold">Distance (km):</span> <span id="displayDistance"></span></p>
+     <p class="mb-2 text-gray-700"><span class="font-semibold">Predicted Time (min):</span> <span id="displayTime"></span></p>
+     <p class="mb-2 text-gray-700"><span class="font-semibold">Traffic Factor:</span> <span id="displayTraffic"></span></p>
+     <p class="mb-4 text-gray-700"><span class="font-semibold">Weather Factor:</span> <span id="displayWeather"></span></p>
+     <button class="w-full bg-black text-white font-semibold rounded-md py-2.5 hover:bg-gray-900 transition" id="proceedBtn" type="button">
+      Proceed
+     </button>
+    </div>
+   </div>
+  </div>
+  <script>
+   const form = document.getElementById('routeForm');
+   const placeholderContent = document.getElementById('placeholderContent');
+   const detailsContent = document.getElementById('detailsContent');
+   const displayOrigin = document.getElementById('displayOrigin');
+   const displayDestination = document.getElementById('displayDestination');
+   const displayDistance = document.getElementById('displayDistance');
+   const displayTime = document.getElementById('displayTime');
+   const displayTraffic = document.getElementById('displayTraffic');
+   const displayWeather = document.getElementById('displayWeather');
+   const proceedBtn = document.getElementById('proceedBtn');
+
+   form.addEventListener('submit', async function(e) {
+     e.preventDefault();
+     const origin = document.getElementById('origin').value.trim();
+     const destination = document.getElementById('destination').value.trim();
+
+     if(origin && destination) {
+       try {
+         const response = await fetch('http://127.0.0.1:5000/get_routes', {
+           method: 'POST',
+           headers: {
+             'Content-Type': 'application/json'
+           },
+           body: JSON.stringify({ origin, destination })
+         });
+
+         if (!response.ok) {
+           const errorData = await response.json();
+           alert(errorData.error || 'Failed to fetch route details');
+           return;
+         }
+
+         const data = await response.json();
+
+         displayOrigin.textContent = data.origin;
+         displayDestination.textContent = data.destination;
+         displayDistance.textContent = data.distance_km;
+         displayTime.textContent = data.predicted_time_min;
+         displayTraffic.textContent = data.traffic_factor;
+         displayWeather.textContent = data.weather_factor;
+
+         placeholderContent.classList.add('hidden');
+         detailsContent.classList.remove('hidden');
+       } catch (error) {
+         alert('Error fetching route details');
+         console.error(error);
+       }
+     }
+   });
+
+   proceedBtn.addEventListener('click', () => {
+  const routeDetails = {
+    origin: displayOrigin.textContent,
+    destination: displayDestination.textContent,
+    distance: parseFloat(displayDistance.textContent),
+    travel_time: parseFloat(displayTime.textContent)
+  };
+
+  localStorage.setItem("routeDetails", JSON.stringify(routeDetails));
+  window.location.href = 'assigndelivery.html';
+});
+
+  </script>
+ </body>
+</html>

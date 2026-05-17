@@ -1,0 +1,24 @@
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Private Local PostgreSQL Database Data
+db_data/
+
+# Python caching
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Logs
+*.log
+
+# Environment variables (sensitive data)
+.env
+backend/.env
+
+# OS files
+.DS_Store
+Thumbs.db

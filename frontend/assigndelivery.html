@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assign Delivery - DeliverEase</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f3f4f6;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center">
+  <div class="bg-white p-10 rounded-xl shadow-md w-full max-w-xl">
+    <h1 class="text-2xl font-bold mb-6 text-center text-gray-800">Assign Delivery</h1>
+    <form id="assignForm" class="space-y-6">
+      <div>
+        <label for="driver" class="block text-sm font-medium text-gray-700">Select Driver</label>
+        <select id="driver" name="driver" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"></select>
+      </div>
+
+      <div>
+        <label for="truck" class="block text-sm font-medium text-gray-700">Select Truck</label>
+        <select id="truck" name="truck" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"></select>
+      </div>
+
+      <div>
+        <label for="clientName" class="block text-sm font-medium text-gray-700">Client Name</label>
+        <input type="text" id="clientName" name="clientName" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required />
+      </div>
+
+      <div>
+        <label for="clientPhone" class="block text-sm font-medium text-gray-700">Client Phone</label>
+        <input type="text" id="clientPhone" name="clientPhone" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required />
+      </div>
+
+      <div>
+        <label for="clientEmail" class="block text-sm font-medium text-gray-700">Client Email</label>
+        <input type="email" id="clientEmail" name="clientEmail" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required />
+      </div>
+
+      <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700">Assign and Proceed</button>
+    </form>
+  </div>
+
+  <script>
+    const routeDetails = JSON.parse(localStorage.getItem("routeDetails"));
+    const driverSelect = document.getElementById("driver");
+    const truckSelect = document.getElementById("truck");
+    const form = document.getElementById("assignForm");
+
+    // Populate drivers and trucks
+    async function loadResources() {
+      try {
+        const res = await fetch('http://127.0.0.1:5000/get_available_resources');
+        const data = await res.json();
+
+        data.drivers.forEach(driver => {
+          const option = document.createElement("option");
+          option.value = driver.id;
+          option.textContent = `${driver.name} (${driver.phone})`;
+          driverSelect.appendChild(option);
+        });
+
+        data.trucks.forEach(truck => {
+          const option = document.createElement("option");
+          option.value = truck.id;
+          option.textContent = `${truck.truck_number}`;
+          truckSelect.appendChild(option);
+        });
+      } catch (err) {
+        alert("Failed to load available drivers or trucks.");
+        console.error(err);
+      }
+    }
+
+    loadResources();
+
+    // Submit handler
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const clientInfo = {
+        name: document.getElementById("clientName").value,
+        phone: document.getElementById("clientPhone").value,
+        email: document.getElementById("clientEmail").value
+      };
+
+      localStorage.setItem("clientInfo", JSON.stringify(clientInfo));
+
+      const deliveryData = {
+        origin: routeDetails.origin,
+        destination: routeDetails.destination,
+        distance: routeDetails.distance,
+        travel_time: routeDetails.travel_time,
+        driver_id: driverSelect.value,
+        truck_id: truckSelect.value
+      };
+
+      try {
+        const res = await fetch('http://127.0.0.1:5000/assign_delivery', {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(deliveryData)
+        });
+
+        const data = await res.json();
+        if (data.delivery_id) {
+          localStorage.setItem("delivery_id", data.delivery_id);
+          window.location.href = "ordersummary.html";
+        } else {
+          alert("Assignment failed. Please try again.");
+        }
+      } catch (err) {
+        alert("Error assigning delivery.");
+        console.error(err);
+      }
+    });
+  </script>
+</body>
+</html>
