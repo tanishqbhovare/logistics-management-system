@@ -1,135 +1,300 @@
-# DeliverEase — Premium Logistics & Resource Management System
+# DeliverEase — Logistics Management System
 
-DeliverEase is a robust, production-ready, and beautifully designed web application for real-time logistics routing, weather-adapted travel time predictions, and automated driver and fleet allocation. 
+DeliverEase is a full-stack logistics management web application designed to manage delivery bookings, route planning, truck-driver assignment, pricing, and delivery tracking. The system helps users enter origin and destination locations, view route and distance details, select available drivers and trucks, provide client information, choose pricing plans, and confirm delivery assignments through a structured workflow.
 
-The production-ready, refactored, and thoroughly tested source code is located in the **[clean_version/](file:///Users/bhovaretanishq/Documents/logistics_project/clean_version)** directory. It runs flawlessly on PostgreSQL and features a state-of-the-art dispatch and fleet management flow.
-
----
-
-## Key Features
-
-- **Smart Geocoding & Route Calculation**: Uses `geopy` and the OpenStreetMap Nominatim service to locate coordinates for any origin/destination city in India without requiring paid API keys.
-- **Dynamic Weather & Traffic Adaptations**: Integrates real-time weather alerts via the Open-Meteo API. Automatically applies calculated traffic and weather delay factors to estimate precise travel times.
-- **Automated Double-Booking Prevention**: Dynamically queries PostgreSQL to fetch only currently available drivers and trucks. On assignment, resource states are immediately flipped to unavailable.
-- **Real-time Active Dashboard**: Displays active deliveries with live status badges.
-- **Premium Custom Confirmation Dialogs**: Custom-built HTML/CSS confirmation modals and success toast banners replace intrusive, blocking native browser alerts for a sleek user experience.
-- **Auto-Release Resource Cycle**: Completing a delivery automatically marks the associated driver and truck as available again for the next dispatch cycle.
+The project is built using a Flask backend, PostgreSQL database, HTML/CSS/JavaScript frontend, and route prediction logic. It is designed as a clean academic/full-stack project demonstrating backend APIs, database operations, delivery management, and basic AI/ML-based route time prediction.
 
 ---
 
-## Repository Architecture
+## Features
 
-The repository is structured as follows:
-
-- **`clean_version/`** - The primary, fully working isolated project workspace.
-  - `backend/` - High-performance Flask server, database pooled configuration, and API routes.
-  - `data/` - Static CSV seed files for trucks and drivers.
-  - `frontend/` - Modern dispatcher interface files powered by Tailwind CSS.
-  - `requirements.txt` - Fixed and verified Python production dependencies.
-  - `.gitignore` - Production rules keeping virtual environments and credentials secure and private.
-  - `README.md` - Technical setup guide for local development.
+- Origin and destination input for delivery route planning
+- Route distance and estimated travel time calculation
+- Driver and truck availability management
+- Truck and driver assignment workflow
+- Client details collection
+- Package weight-based pricing plans
+- Delivery order summary page
+- Delivery assignment confirmation
+- Delivery status tracking
+- PostgreSQL database integration
+- Modular Flask backend structure
+- Environment-variable based configuration
+- Clean frontend flow for booking and assignment
 
 ---
 
-## Quick Start (Local Setup)
+## Tech Stack
 
-Follow these step-by-step instructions to get DeliverEase running locally on your machine.
+### Frontend
+- HTML
+- CSS
+- JavaScript
 
-### Prerequisites
-- Python 3.10+
-- PostgreSQL (Homebrew or EnterpriseDB)
+### Backend
+- Python
+- Flask
 
-### 1. Navigate to the Clean Version Workspace
-Open your terminal and enter the clean isolated workspace:
-```bash
-cd clean_version
+### Database
+- PostgreSQL
+
+### Machine Learning / Prediction
+- Python-based route time prediction logic
+- Scikit-learn compatible structure for future model improvement
+
+---
+
+## Project Structure
+
+```text
+logistics-management-system/
+│
+├── backend/
+│   ├── app.py
+│   ├── database.py
+│   ├── routes.py
+│   ├── setup_db.py
+│   ├── route_prediction.py
+│   ├── traffic_data.py
+│   ├── weather_data.py
+│   ├── utils.py
+│   └── .env.example
+│
+├── frontend/
+│   ├── index.html
+│   ├── routes.html
+│   ├── assigndelivery.html
+│   ├── ordersummary.html
+│   ├── final.html
+│   ├── style.css
+│   └── script.js
+│
+├── .gitignore
+├── README.md
+└── requirements.txt
 ```
 
-### 2. Initialize Private Local Database
-To make setting up completely painless without password prompts or system database configurations, you can run a private PostgreSQL server directly in the project directory:
+---
 
-Start PostgreSQL on port `5432`:
+## Backend Setup
+
+### 1. Clone the Repository
 
 ```bash
-pg_ctl -D db_data -o "-p 5432" -l db_data/server.log start
+git clone https://github.com/tanishqbhovare/logistics-management-system.git
+cd logistics-management-system
+```
+
+### 2. Create and Activate a Virtual Environment
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+For Windows:
+
+```bash
+venv\Scripts\activate
+```
+
+### 3. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## Database Setup
+
+This project uses PostgreSQL as the database.
+
+### 1. Initialize a Local PostgreSQL Database Cluster
+
+Create a local database cluster folder:
+
+```bash
+initdb -D db_data -U your_postgres_user --auth=scram-sha-256
+```
+
+Replace `your_postgres_user` with your PostgreSQL username.
+
+### 2. Start PostgreSQL Server
+
+Start PostgreSQL on port `5433`:
+
+```bash
+pg_ctl -D db_data -o "-p 5433" -l db_data/server.log start
 ```
 
 ### 3. Create the Project Database
 
-Create a database named `logistics_db`:
-
 ```bash
-createdb -p 5432 -U your_postgres_user logistics_db
+createdb -p 5433 -U your_postgres_user logistics_db
 ```
 
 ### 4. Connect to the Database
 
-You can connect to the database using:
+```bash
+psql -p 5433 -U your_postgres_user -d logistics_db
+```
+
+---
+
+## Environment Variables
+
+Create a `.env` file inside the `backend/` directory:
 
 ```bash
-psql -p 5432 -U your_postgres_user -d logistics_db
+touch backend/.env
+```
 
-### 3. Configure Environment Variables
-Create a file named `.env` inside the `backend/` directory and paste the following parameters:
+Add the following variables:
 
 ```env
-DB_NAME=your_database_name
-DB_USER=your_database_user
+DB_NAME=logistics_db
+DB_USER=your_postgres_user
 DB_PASSWORD=your_database_password
 DB_HOST=localhost
-DB_PORT=5432
+DB_PORT=5433
 ```
 
-### 4. Setup Virtual Environment & Install Dependencies
-Activate a Python virtual environment inside the clean folder:
+Do not commit your real `.env` file to GitHub.
 
-```bash
-# Create virtual environment
-python3 -m venv .venv
+Instead, keep a sample file named `.env.example`:
 
-# Activate virtual environment
-source .venv/bin/activate
-
-# Install all required production libraries
-pip install -r requirements.txt
+```env
+DB_NAME=logistics_db
+DB_USER=your_postgres_user
+DB_PASSWORD=your_database_password
+DB_HOST=localhost
+DB_PORT=5433
 ```
-
-### 5. Create Tables & Seed Data
-Run the database migration script. This will connect to your PostgreSQL instance, configure the relational schemas (`drivers`, `trucks`, `deliveries`), and seed them using files in the `data/` directory:
-
-```bash
-python backend/setup_db.py
-```
-
-### 6. Launch the Server
-Start the Flask backend API:
-
-```bash
-python backend/app.py
-```
-The server will boot up and listen for requests at `http://127.0.0.1:5000`.
-
-### 7. Run the Frontend
-Simply double-click or open `frontend/index.html` in any web browser of your choice to launch the gorgeous dispatcher user interface!
 
 ---
 
-##  API Endpoints Reference
+## Git Ignore Safety
 
-| Endpoint | Method | Description |
-| :--- | :--- | :--- |
-| `POST /get_routes` | `POST` | Takes `{origin, destination}`. Returns weather-adapted time and distance. |
-| `GET /get_available_resources` | `GET` | Returns list of all currently available drivers and trucks. |
-| `POST /assign_delivery` | `POST` | Registers a delivery and flags the assigned driver & truck as unavailable. |
-| `POST /confirm_delivery` | `POST` | Marks delivery as completed and frees up the driver and truck. |
-| `GET /all_deliveries` | `GET` | Returns list of all active and completed deliveries in the system. |
-| `GET /order_summary/<id>` | `GET` | Retrieves receipt-style details of a specific delivery by its ID. |
+The following files and folders should not be committed:
+
+```gitignore
+.env
+*.env
+backend/.env
+db_data/
+backend/db_data/
+*.log
+__pycache__/
+venv/
+.venv/
+.DS_Store
+```
 
 ---
 
-##  Deployment (Free on Render.com)
+## Run the Backend
 
-DeliverEase is fully prepared for instant production hosting on Render:
-1. **Database**: Spin up a Free PostgreSQL Database on Render. Copy its *External Database URL*.
-2. **Backend**: Deploy a Free Web Service. Connect your GitHub repository, set root directory to `clean_version`, set start command to `gunicorn --chdir backend app:app`, and add an environment variable `DATABASE_URL` with your Render database connection string.
-3. **Frontend**: Update frontend `fetch` links to point to the live Render backend URL, commit, and deploy a Free Static Site pointing to the `clean_version/frontend` directory.
+Go to the backend folder:
+
+```bash
+cd backend
+```
+
+Run the Flask application:
+
+```bash
+python app.py
+```
+
+The backend will start locally, usually at:
+
+```text
+http://127.0.0.1:5000
+```
+
+---
+
+## Frontend Flow
+
+The application follows this delivery booking flow:
+
+```text
+index.html → routes.html → assigndelivery.html → ordersummary.html → final.html
+```
+
+### Flow Explanation
+
+1. User enters origin and destination.
+2. System calculates route details and distance.
+3. User selects an available truck and driver.
+4. User enters client details.
+5. System displays order summary and pricing plans.
+6. User confirms assignment.
+7. Delivery is marked as assigned.
+
+---
+
+## Pricing Plans
+
+| Package Weight | Price |
+|---|---:|
+| Less than 3 kg | ₹70 |
+| 3 kg - 5 kg | ₹110 |
+| 5 kg - 10 kg | ₹340 |
+| 10 kg - 15 kg | ₹700 |
+
+---
+
+## Database Tables
+
+The project uses the following main tables:
+
+### trucks
+
+Stores truck details and availability.
+
+### drivers
+
+Stores driver details and availability.
+
+### deliveries
+
+Stores delivery records, route details, assigned truck/driver, status, and timestamps.
+
+---
+
+## Security Notes
+
+- Do not upload `.env` files to GitHub.
+- Do not upload `db_data/` PostgreSQL folders.
+- Do not expose real database passwords in README files.
+- Use placeholder values in documentation.
+- Use environment variables for sensitive configuration.
+
+---
+
+## Future Improvements
+
+- Real-time MapmyIndia route and traffic integration
+- Live delivery tracking
+- Admin dashboard
+- Driver dashboard
+- Better machine learning model for delay prediction
+- Authentication and role-based access
+- Deployment on Render or Railway
+- API documentation
+
+---
+
+## Author
+
+Tanishq Bhovare
+
+---
+
+## Repository
+
+```text
+https://github.com/tanishqbhovare/logistics-management-system
+```
