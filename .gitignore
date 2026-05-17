@@ -6,6 +6,7 @@ env/
 
 # Private Local PostgreSQL Database Data
 db_data/
+backend/db_data/
 
 # Python caching
 __pycache__/
@@ -17,6 +18,7 @@ __pycache__/
 
 # Environment variables (sensitive data)
 .env
+*.env
 backend/.env
 
 # OS files
